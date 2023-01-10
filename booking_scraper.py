@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 
+#headers to make the request
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0',
     'Accept-Language': 'en-GB,en;q=0.5',
@@ -9,6 +10,7 @@ headers = {
     'DNT': '1'
 }
 
+#creates the url that will be scraped based on the informations provided
 def create_url(people, country, city, datein, dateout, minPrice, maxPrice):
     
     range = f'nflt=price%3DEUR-{minPrice}-{maxPrice}-1'
@@ -29,10 +31,12 @@ def create_url(people, country, city, datein, dateout, minPrice, maxPrice):
                 range=range)
     return url
 
+#scrapes the url and prints the information
 def get_data(url):
     global headers
     response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.content, 'lxml')
+    
     for item in soup.find_all('div', attrs={'data-testid':'property-card'}):
         try:
             name = item.find('div', attrs={'data-testid':'title'}).get_text()
@@ -52,6 +56,7 @@ def get_data(url):
             print('----------------------------------------------------------')
         except Exception as e:
             print('')
+            
 if __name__ == '__main__':
   people = int(input("Insert the number of people: "))
   country = input("Insert the country: ")
